@@ -8,6 +8,7 @@ fn deduplicate(m: &[Vec<i32>]) -> Vec<i32> {
     let mut flat: Vec<i32> = vec![];
     for inner in m {
         for &k in inner {
+            println!("{} ", k);
             if !flat.contains(&k) {
                 flat.push(k);
             }
@@ -30,27 +31,38 @@ fn sort(m: &mut Vec<i32>) {
 }
 
 fn main() {
-    let mut mat : Vec<Vec<i32>> = vec![];
+    let mut mat: Vec<Vec<i32>> = vec![];
     loop {
-        let mut inner_vec : Vec<i32> = vec![];
-        let mut b = false;
+        let mut inner_vec: Vec<i32> = vec![];
+        let mut done = false;
         loop {
-            let mut inpu = String::new();
-            io::stdin().read_line(&mut inpu);
-            let inpu:i32 = match inpu.trim().parse() {
-                Ok(num) => num,
-                Err(_) => {if inpu=="done\n" {b = true;break;}
-                else if inpu=="d" {break;}
-                else {continue;}},
-            };
-            inner_vec.push(inpu);
+            let mut input = String::new();
+            io::stdin().read_line(&mut input).unwrap();
+            let trimmed = input.trim();
+            match trimmed.parse::<i32>() {
+                Ok(num) => inner_vec.push(num),
+                Err(_) => {
+                    if trimmed == "done" { done = true; break; }
+                    else if trimmed == "d" { break; }
+                    // else: ignore and keep reading
+                }
+            }
         }
-        if b {break;}
         mat.push(inner_vec);
+        if done { break; }
     }
+    let n = mat.len();
+    for inner in 0..n {
+        let m = mat[inner].len();
+        for j in 0..m {
+            println!("{} ", mat[inner][j]);
+        }
+    }
+    println!("ok");
     let mut result = deduplicate(&mat);
     sort(&mut result);
+
     for i in &result {
-        println!("{} ",i);
+        println!("{}", i);
     }
 }
